@@ -1,0 +1,19 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+firmware/**/include/secrets.h
+
+# Telemetry stack local state
+apps/telemetry/data/
+apps/telemetry/.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

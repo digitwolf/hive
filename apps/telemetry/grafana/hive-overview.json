@@ -1,0 +1,58 @@
+{
+  "title": "Hive overview",
+  "uid": "hive-overview",
+  "schemaVersion": 39,
+  "time": { "from": "now-7d", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "hive",
+        "type": "custom",
+        "query": "hive-a,hive-b",
+        "current": { "text": "hive-a", "value": "hive-a" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Weight (kg) — $hive",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [{
+        "query": "from(bucket:\"hive\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"weight\" and r.hive_id == \"${hive}\" and r._field == \"kg\")"
+      }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Brood nest temp (°C) — $hive",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [{
+        "query": "from(bucket:\"hive\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"brood\" and r.hive_id == \"${hive}\" and r._field =~ /^probes_/)"
+      }]
+    },
+    {
+      "type": "timeseries",
+      "title": "In-hive vs outside temp / RH — $hive",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [{
+        "query": "from(bucket:\"hive\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"env\" and r.hive_id == \"${hive}\")"
+      }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Sound bands (dB) — $hive",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [{
+        "query": "from(bucket:\"hive\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"sound\" and r.hive_id == \"${hive}\" and r._field =~ /^bands_db_/)"
+      }]
+    },
+    {
+      "type": "stat",
+      "title": "Node — $hive",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 4 },
+      "targets": [{
+        "query": "from(bucket:\"hive\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"node\" and r.hive_id == \"${hive}\" and (r._field == \"rssi\" or r._field == \"vbat\" or r._field == \"uptime_s\")) |> last()"
+      }]
+    }
+  ]
+}
