@@ -81,11 +81,16 @@ build the scale.
 
 ### Compute / platform
 
-- **ESP32 + Arduino/PlatformIO**: mature libs for every sensor above (HX711,
-  DallasTemperature, Adafruit SHT31, arduinoFFT, PubSubClient). Chosen.
+- **ESP32 + Rust (`esp-idf-svc`, std on ESP-IDF)**: Wi-Fi/MQTT/SNTP/I2S/
+  deep sleep all wrapped; `bme280`, `ds18b20`/`one-wire-bus`, `microfft`
+  crates cover the sensors; HX711 and SHT31 are a few lines of protocol
+  each. **Chosen** — all firmware in this repo is Rust. Trade-off vs
+  bare-metal `esp-hal`: bigger binary and slower boot, which doesn't matter
+  for a node that wakes every 5 minutes.
+- ESP32 + Arduino/PlatformIO: the largest sensor-library ecosystem, but
+  ruled out by the all-Rust decision.
 - ESPHome: fast to stand up, great with Home Assistant, but on-device FFT
-  and custom drift compensation are awkward. Keep as an option for hive B
-  if firmware time runs out.
+  and custom drift compensation are awkward, and it isn't Rust.
 - Raspberry Pi Zero: full Linux, easy camera, but power and SD-card rot in
   the cold. No.
 

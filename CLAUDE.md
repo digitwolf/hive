@@ -10,7 +10,8 @@ monitoring/automation built around it. This file tells Claude how to work here.
   `docs/research/README.md`.
 - `logs/` is the record of what actually happened to the bees. Never invent
   entries; only write from what the user reports.
-- `firmware/hive-monitor/` is a PlatformIO ESP32 project.
+- `firmware/hive-monitor/` is a Rust (`esp-idf-svc`) ESP32 project. **All
+  firmware in this repo is written in Rust** — no Arduino/C++.
 - `apps/telemetry/` is the home-server side (MQTT broker, InfluxDB, Grafana).
 - `hardware/` holds the bill of materials and wiring notes.
 - `.claude/agents/` and `.claude/skills/` define the Claude helpers.
@@ -32,16 +33,22 @@ monitoring/automation built around it. This file tells Claude how to work here.
 
 ## Firmware
 
-- Target board: ESP32 (`esp32dev`), PlatformIO, Arduino framework.
-- Don't add a library to `platformio.ini` without a one-line reason in the
-  commit message.
+- Language: Rust. Target: ESP32 (Xtensa, `xtensa-esp32-espidf`), std on
+  ESP-IDF via `esp-idf-svc` / `esp-idf-hal`. Toolchain: `espup` (`esp`
+  channel), `ldproxy`, `espflash`.
+- Don't add a crate to `Cargo.toml` without a one-line comment above it
+  saying why.
 - Sensor reads happen in `src/sensors/`, transport in `src/transport/`,
-  glue in `src/main.cpp`. Keep `main.cpp` small.
+  payload structs in `src/telemetry.rs`, glue in `src/main.rs`. Keep
+  `main.rs` small. `unsafe` only for direct `esp_idf_sys` calls, each with
+  a `// SAFETY:` line.
 - Publish to MQTT topic `hive/<hive-id>/<metric>`; payloads are JSON. Topic
   and payload schema are documented in `docs/research/telemetry-schema.md`
-  — update both together.
+  and mirrored by the serde structs in `src/telemetry.rs` — update all
+  together.
+- Optional hardware (heater) goes behind a cargo feature, default off.
 - There is no hardware in CI. Say clearly in any PR/commit whether the code
-  was compiled (`pio run`) and whether it was tested on a device.
+  was compiled (`cargo build`) and whether it was tested on a device.
 
 ## Git
 
