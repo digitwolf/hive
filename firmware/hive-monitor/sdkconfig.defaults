@@ -1,0 +1,11 @@
+# ESP-IDF options for hive-monitor.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=16000
+# I2S capture + FFT buffers live on the main task stack; keep it roomy.
+CONFIG_FREERTOS_HZ=1000
+# Task watchdog is what turns the heater off if the control loop stalls.
+CONFIG_ESP_TASK_WDT_EN=y
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=10
+CONFIG_ESP_TASK_WDT_PANIC=y
+# Bootloader: don't waste time on a log flood at every deep-sleep wake.
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y

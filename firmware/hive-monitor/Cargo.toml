@@ -1,0 +1,50 @@
+[package]
+name = "hive-monitor"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77"
+description = "Per-hive ESP32 sensor node: scale, climate, brood temps, sound -> MQTT"
+
+[[bin]]
+name = "hive-monitor"
+harness = false
+
+[features]
+default = []
+# Bottom-board heater controller. Node stays awake. Requires the hardware
+# thermal cutoff wired in series — see docs/research/hive-heating.md.
+heater = []
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true
+opt-level = "z"
+
+[dependencies]
+log = "0.4"
+anyhow = "1"
+# ESP-IDF bindings: Wi-Fi, MQTT, SNTP, I2C/I2S/GPIO drivers, deep sleep.
+esp-idf-svc = { version = "0.49", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
+esp-idf-hal = "0.44"
+esp-idf-sys = "0.35"
+embedded-hal = "1.0"
+# Share one I2C bus between the SHT31 and BME280 drivers.
+embedded-hal-bus = "0.2"
+# BME280 (outside temp/RH/pressure) — embedded-hal 1.0 driver.
+bme280 = "0.5"
+# DS18B20 brood probes over 1-Wire (embedded-hal 0.2 traits, which esp-idf-hal also implements).
+one-wire-bus = "0.1"
+ds18b20 = "0.1"
+# Fixed-size real FFT for sound band energies, no_std, no allocation.
+microfft = "0.6"
+# JSON payloads per docs/research/telemetry-schema.md.
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Build-time config (Wi-Fi/MQTT secrets, hive id) from cfg.toml.
+toml-cfg = "0.2"
+
+[build-dependencies]
+embuild = "0.32"
+toml-cfg = "0.2"

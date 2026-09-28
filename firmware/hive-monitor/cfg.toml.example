@@ -1,0 +1,10 @@
+# Copy to cfg.toml (gitignored). One copy per hive, or swap hive_id before
+# each build.
+[hive-monitor]
+hive_id = "hive-a"
+wifi_ssid = "your-ssid"
+wifi_pass = "your-password"
+mqtt_host = "192.168.1.10"   # home server running apps/telemetry
+mqtt_port = 1883
+mqtt_user = ""               # empty = anonymous (v0 LAN setup)
+mqtt_pass = ""

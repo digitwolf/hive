@@ -1,8 +1,4 @@
-# PlatformIO
-.pio/
-.pioenvs/
-.piolibdeps/
-firmware/**/include/secrets.h
+# (PlatformIO removed; firmware is Rust)
 
 # Telemetry stack local state
 apps/telemetry/data/
@@ -17,3 +13,8 @@ __pycache__/
 .vscode/
 .idea/
 .DS_Store
+
+# Rust / ESP-IDF
+target/
+firmware/**/.embuild/
+firmware/**/cfg.toml

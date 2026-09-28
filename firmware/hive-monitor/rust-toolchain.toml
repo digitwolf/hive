@@ -1,0 +1,5 @@
+# Xtensa (ESP32) needs Espressif's Rust fork. Install with:
+#   cargo install espup && espup install
+# then `. ~/export-esp.sh` before building.
+[toolchain]
+channel = "esp"
